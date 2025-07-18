@@ -1,0 +1,33 @@
+@import "tailwindcss";
+.leaflet-pulse-icon {
+  position: relative;
+}
+.leaflet-pulse-icon::after {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: -6px;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: rgba(59, 130, 246, 0.35);
+  animation: leaflet-pulse 1.5s ease-out infinite;
+}
+@keyframes leaflet-pulse {
+  0% { transform: scale(0.5); opacity: 0.75; }
+  70% { transform: scale(1.75); opacity: 0; }
+  100% { transform: scale(1.75); opacity: 0; }
+}
+
+/* Fade-in wrapper (optional) */
+.map-fade-enter {
+  opacity: 0;
+  transform: scale(.98);
+  animation: map-fade .25s ease forwards;
+}
+@keyframes map-fade {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
