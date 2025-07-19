@@ -1,105 +1,15 @@
 import express from 'express';
-import Booking from '../models/Booking.js';
-import Vehicle from '../models/Vehicle.js';
+
 import auth from '../middleware/auth.js';
+import { bookingVehicle, cancelBooking, getBookings } from '../controllers/bookingController.js';
 
 const router = express.Router();
 
-router.post('/', auth(['user']), async (req, res) => {
-  const { vehicleId, fromPincode, toPincode, startTime } = req.body;
-  if (!vehicleId || !fromPincode || !toPincode || !startTime) {
-    return res.status(400).json({ message: 'All fields are required' });
-  }
+router.post('/', auth(['user']), bookingVehicle);
 
-  try {
-    const vehicle = await Vehicle.findById(vehicleId);
-    if (!vehicle) return res.status(404).json({ message: 'Vehicle not found' });
-
-    const estimatedRideDurationHours = Math.abs(parseInt(toPincode) - parseInt(fromPincode)) % 24;
-    const start = new Date(startTime);
-    const endTime = new Date(start.getTime() + estimatedRideDurationHours * 60 * 60 * 1000);
-
-    const conflictingBooking = await Booking.findOne({
-      vehicleId,
-      $or: [
-        { startTime: { $lte: endTime }, endTime: { $gte: start } },
-        { startTime: { $gte: start, $lte: endTime } },
-      ],
-    });
-
-    if (conflictingBooking) {
-      return res.status(409).json({ message: 'Vehicle is already booked for this time slot' });
-    }
-
-    const booking = new Booking({
-      vehicleId,
-      fromPincode,
-      toPincode,
-      startTime: start,
-      endTime,
-      customerId: req.user.id,
-    });
-
-    await booking.save();
-    res.status(201).json(booking);
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-router.get('/my-bookings', auth(['user', 'admin']), async (req, res) => {
-  try {
-    let query;
-    if (req.user.role === 'admin') {
-      const vehicleIds = await Vehicle.find({ ownerId: req.user.id }).distinct('_id');
-      query = { vehicleId: { $in: vehicleIds } };
-    } else {
-      query = { customerId: req.user.id };
-    }
-
-    const bookings = await Booking.find(query)
-      .populate('vehicleId')       // vehicle info
-      .populate('customerId');     // user who booked (needed for admin view)
-
-    res.json(bookings);
-  } catch (error) {
-    console.error('[GET /my-bookings ERROR]', error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+router.get('/my-bookings', auth(['user', 'admin']), getBookings);
 
 
-router.delete("/:id", auth(["user", "admin"]), async (req, res) => {
-  try {
-    const booking = await Booking.findById(req.params.id);
-    if (!booking) {
-      return res.status(404).json({ message: "Booking not found" });
-    }
-
-    // Access control
-    if (req.user.role === "user") {
-      if (booking.customerId.toString() !== req.user.id) {
-        return res.status(403).json({ message: "Access denied" });
-      }
-    } else if (req.user.role === "admin") {
-      // Ensure this admin owns the vehicle tied to the booking
-      const vehicle = await Vehicle.findById(booking.vehicleId);
-      if (!vehicle) {
-        return res.status(404).json({ message: "Vehicle not found for booking" });
-      }
-      if (vehicle.ownerId.toString() !== req.user.id) {
-        return res.status(403).json({ message: "Access denied" });
-      }
-    }
-
-    // Actually delete
-    await booking.deleteOne(); // ✅ replaces remove()
-
-    return res.json({ message: "Booking cancelled" });
-  } catch (error) {
-    console.error("[BOOKING CANCEL ERROR]", error);
-    res.status(500).json({ message: "Server error" });
-  }
-});
+router.delete("/:id", auth(["user", "admin"]), cancelBooking);
 
 export default router;
