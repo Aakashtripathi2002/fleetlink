@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { getCoordinates, getRoute } from "../utils/map";
 import axios from "axios";
 import Map from "./Map";
-import toast from "react-hot-toast"; 
+import toast from "react-hot-toast";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const API_BASE = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
@@ -11,12 +13,12 @@ export default function SearchVehicle() {
     capacityRequired: "",
     fromPincode: "",
     toPincode: "",
-    startTime: "",
+    startTime: null, // Store Date object
   });
 
   const [vehicles, setVehicles] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
-  const [bookingLoading, setBookingLoading] = useState(""); 
+  const [bookingLoading, setBookingLoading] = useState("");
   const [user, setUser] = useState(null);
 
   const [routeInfo, setRouteInfo] = useState({
@@ -37,7 +39,10 @@ export default function SearchVehicle() {
 
     try {
       const { data } = await axios.get(`${API_BASE}/vehicles/available`, {
-        params: formData,
+        params: {
+          ...formData,
+          startTime: formData.startTime ? formData.startTime.toISOString() : "",
+        },
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
 
@@ -66,7 +71,6 @@ export default function SearchVehicle() {
     }
   };
 
-
   const handleBook = async (vehicleId) => {
     if (!formData.fromPincode || !formData.toPincode || !formData.startTime) {
       toast.error("Please fill all fields before booking.");
@@ -80,10 +84,10 @@ export default function SearchVehicle() {
         vehicleId,
         fromPincode: formData.fromPincode,
         toPincode: formData.toPincode,
-        startTime: new Date(formData.startTime).toISOString(),
+        startTime: formData.startTime.toISOString(),
       };
 
-      await axios.post(`${API_BASE}/api/bookings`, payload, {
+      await axios.post(`${API_BASE}/bookings`, payload, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
 
@@ -137,13 +141,20 @@ export default function SearchVehicle() {
               className="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
-            <input
-              type="datetime-local"
-              value={formData.startTime}
-              onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-              className="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+
+            {/* Updated DatePicker */}
+            <DatePicker
+              selected={formData.startTime}
+              onChange={(date) => setFormData({ ...formData, startTime: date })}
+              showTimeSelect
+              timeIntervals={15}
+              dateFormat="dd/MM/yyyy h:mm aa"
+              minDate={new Date()}
+              placeholderText="Select Date & Time"
+              className="p-3 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
+
             <button
               type="submit"
               disabled={searchLoading}
@@ -171,6 +182,7 @@ export default function SearchVehicle() {
               )}
             </button>
           </form>
+
           {vehicles.length > 0 && (
             <div>
               <h4 className="text-xl font-bold mb-4 text-gray-800">

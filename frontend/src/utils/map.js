@@ -10,7 +10,7 @@ export async function getCoordinates(pincode) {
   const cached = sessionStorage.getItem(cacheKey);
   if (cached) return JSON.parse(cached);
 
-  const { data } = await axios.get(`${API_BASE}/api/geocode`, {
+  const { data } = await axios.get(`${API_BASE}/geocode`, {
     params: { pincode },
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
   });
@@ -33,7 +33,7 @@ export async function getRoute({ fromLat, fromLon, toLat, toLon }) {
     throw new Error("All coordinates required for routing");
   }
 
-  const { data } = await axios.get(`${API_BASE}/api/route`, {
+  const { data } = await axios.get(`${API_BASE}/route`, {
     params: { fromLat, fromLon, toLat, toLon },
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
   });

@@ -3,20 +3,14 @@ import {
   MapContainer,
   TileLayer,
   Polyline,
-  CircleMarker,
+  Marker,
   Tooltip,
   useMap,
-  Marker,
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-import {
-  getCoordinates,
-  getRoute,
-  formatKm,
-  formatHours,
-} from "../utils/map";
+import { getCoordinates, getRoute, formatKm, formatHours } from "../utils/map";
 
 function FitBounds({ positions }) {
   const map = useMap();
@@ -28,12 +22,26 @@ function FitBounds({ positions }) {
   return null;
 }
 
-const vehicleIcon = new L.Icon({
-  iconUrl: "https://cdn-icons-png.flaticon.com/512/854/854894.png",
+// Truck icon for moving animation
+const truckIcon = new L.Icon({
+  iconUrl: "/icons/delivery.png", // Truck icon
   iconSize: [40, 40],
   iconAnchor: [20, 20],
 });
 
+// Start location icon
+const startIcon = new L.Icon({
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/684/684908.png", // Start marker icon
+  iconSize: [30, 30],
+  iconAnchor: [15, 30],
+});
+
+// End location icon
+const endIcon = new L.Icon({
+  iconUrl: "https://cdn-icons-png.flaticon.com/512/149/149059.png", // End marker icon
+  iconSize: [30, 30],
+  iconAnchor: [15, 30],
+});
 
 function MovingMarker({ positions, speed = 50 }) {
   const [index, setIndex] = useState(0);
@@ -63,7 +71,7 @@ function MovingMarker({ positions, speed = 50 }) {
   return (
     <Marker
       position={positions[index]}
-      icon={vehicleIcon}
+      icon={truckIcon}
       ref={markerRef}
     ></Marker>
   );
@@ -188,6 +196,17 @@ export default function Map({
 
         {positions.length > 1 && (
           <>
+            {/* Start Point */}
+            <Marker position={positions[0]} icon={startIcon}>
+              <Tooltip>Starting Point</Tooltip>
+            </Marker>
+
+            {/* End Point */}
+            <Marker position={positions[positions.length - 1]} icon={endIcon}>
+              <Tooltip>Destination</Tooltip>
+            </Marker>
+
+            {/* Route Polyline */}
             <Polyline positions={positions} color="blue" weight={4} />
             <MovingMarker positions={positions} speed={100} />
             <FitBounds positions={positions} />
@@ -195,9 +214,9 @@ export default function Map({
         )}
 
         {positions.length === 1 && (
-          <CircleMarker center={positions[0]} radius={5}>
+          <Marker position={positions[0]} icon={startIcon}>
             <Tooltip>Location</Tooltip>
-          </CircleMarker>
+          </Marker>
         )}
       </MapContainer>
 

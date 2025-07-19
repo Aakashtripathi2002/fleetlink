@@ -31,7 +31,7 @@ export default function VehicleList() {
   const fetchVehicles = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${API_BASE}/api/vehicles/my-vehicles`, {
+      const response = await axios.get(`${API_BASE}/vehicles/my-vehicles`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setVehicles(response.data);
@@ -52,7 +52,7 @@ export default function VehicleList() {
     if (!deleteVehicleId) return;
     setDeleteLoading(true);
     try {
-      await axios.delete(`${API_BASE}/api/vehicles/${deleteVehicleId}`, {
+      await axios.delete(`${API_BASE}/vehicles/${deleteVehicleId}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setVehicles((prev) => prev.filter((v) => v._id !== deleteVehicleId));
@@ -78,7 +78,7 @@ export default function VehicleList() {
     }
     setUpdateLoading(true);
     try {
-      await axios.put(`${API_BASE}/api/vehicles/${editVehicle._id}`, editVehicle, {
+      await axios.put(`${API_BASE}/vehicles/${editVehicle._id}`, editVehicle, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       setVehicles((prev) =>
