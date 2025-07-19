@@ -3,7 +3,6 @@ import axios from "axios";
 
 const router = express.Router();
 
-// GET /api/geocode?pincode=440001
 router.get("/", async (req, res) => {
   const { pincode } = req.query;
   if (!pincode) {
@@ -11,16 +10,15 @@ router.get("/", async (req, res) => {
   }
 
   try {
-    // Use OpenStreetMap Nominatim API
     const { data } = await axios.get("https://nominatim.openstreetmap.org/search", {
       params: {
         postalcode: pincode,
-        countrycodes: "in",   // restrict to India
+        countrycodes: "in",  
         format: "json",
         limit: 1
       },
       headers: {
-        "User-Agent": "FleetLinkApp/1.0" // required by Nominatim
+        "User-Agent": "FleetLinkApp/1.0" 
       }
     });
 

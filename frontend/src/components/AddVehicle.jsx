@@ -1,4 +1,3 @@
-// components/AddVehicle.jsx
 import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -6,13 +5,13 @@ import toast from "react-hot-toast";
 function AddVehicle({ inDashboard = false }) {
   const [formData, setFormData] = useState({ name: "", capacityKg: "", tyres: "" });
   const [loading, setLoading] = useState(false);
-
+const API_BASE = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      await axios.post("http://localhost:5000/api/vehicles", formData, {
+      await axios.post(`${API_BASE}/vehicles`, formData, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
       toast.success("Vehicle added successfully!");
@@ -25,9 +24,8 @@ function AddVehicle({ inDashboard = false }) {
     }
   };
 
-  // Layout decisions
   const outerClasses = inDashboard
-    ? "relative w-full" // embedded
+    ? "relative w-full" 
     : "flex items-center justify-center min-h-screen bg-gray-100 relative"; // standalone page
 
   const cardClasses = inDashboard
@@ -36,7 +34,6 @@ function AddVehicle({ inDashboard = false }) {
 
   return (
     <div className={outerClasses}>
-      {/* Loader Overlay */}
       {loading && (
         <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/30 backdrop-blur-sm">
           <span className="w-10 h-10 border-4 border-white border-t-transparent rounded-full animate-spin" />
@@ -47,7 +44,6 @@ function AddVehicle({ inDashboard = false }) {
         <h3 className="text-2xl font-bold mb-6 text-gray-800 text-center">Add New Vehicle</h3>
 
         <form onSubmit={handleSubmit} className="space-y-4 opacity-100">
-          {/* Vehicle Name */}
           <div>
             <label className="block mb-1 text-gray-700 font-semibold">Vehicle Name</label>
             <input
@@ -60,8 +56,6 @@ function AddVehicle({ inDashboard = false }) {
               disabled={loading}
             />
           </div>
-
-          {/* Capacity */}
           <div>
             <label className="block mb-1 text-gray-700 font-semibold">Capacity (KG)</label>
             <input
@@ -74,8 +68,6 @@ function AddVehicle({ inDashboard = false }) {
               disabled={loading}
             />
           </div>
-
-          {/* Tyres */}
           <div>
             <label className="block mb-1 text-gray-700 font-semibold">Number of Tyres</label>
             <input
@@ -88,8 +80,6 @@ function AddVehicle({ inDashboard = false }) {
               disabled={loading}
             />
           </div>
-
-          {/* Submit Button */}
           <button
             type="submit"
             disabled={loading}

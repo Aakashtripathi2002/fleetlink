@@ -3,14 +3,9 @@ import axios from "axios";
 
 const API_BASE = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
-/**
- * Geocode Indian pincode -> {lat, lon}
- * Uses backend proxy: /api/geocode?pincode=XXXXX
- */
 export async function getCoordinates(pincode) {
   if (!pincode) throw new Error("Pincode required");
 
-  // simple client cache
   const cacheKey = `geo:${pincode}`;
   const cached = sessionStorage.getItem(cacheKey);
   if (cached) return JSON.parse(cached);
@@ -28,10 +23,6 @@ export async function getCoordinates(pincode) {
   return { lat: data.lat, lon: data.lon };
 }
 
-/**
- * Fetch route geometry & metrics.
- * Uses backend proxy: /api/route?fromLat&fromLon&toLat&toLon
- */
 export async function getRoute({ fromLat, fromLon, toLat, toLon }) {
   if (
     fromLat == null ||
@@ -47,24 +38,20 @@ export async function getRoute({ fromLat, fromLon, toLat, toLon }) {
     headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
   });
 
-  // Accept either decoded coordinates or encoded polyline
+ 
   let coordinates = data.coordinates;
   if (!coordinates && data.polyline) {
-    coordinates = decodePolyline(data.polyline); // see helper below
+    coordinates = decodePolyline(data.polyline); 
   }
   if (!coordinates) throw new Error("Route missing coordinates");
 
   return {
-    coordinates, // [[lat,lon],...]
+    coordinates, 
     distanceMeters: data.distanceMeters,
     durationSeconds: data.durationSeconds,
   };
 }
 
-/**
- * Polyline decoder (OSRM/polyline5-style). Adjust if you're using polyline6.
- * Lightweight inline impl to avoid extra deps.
- */
 function decodePolyline(str, precision = 5) {
   let index = 0,
     lat = 0,
@@ -104,7 +91,6 @@ function decodePolyline(str, precision = 5) {
   return coordinates;
 }
 
-/** Format helpers */
 export function formatKm(meters) {
   if (meters == null) return "";
   return `${(meters / 1000).toFixed(1)} km`;

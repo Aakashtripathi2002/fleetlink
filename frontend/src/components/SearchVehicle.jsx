@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getCoordinates, getRoute } from "../utils/map";
 import axios from "axios";
 import Map from "./Map";
-import toast from "react-hot-toast"; // ✅ Import toast
+import toast from "react-hot-toast"; 
 
 const API_BASE = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
@@ -16,7 +16,7 @@ export default function SearchVehicle() {
 
   const [vehicles, setVehicles] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
-  const [bookingLoading, setBookingLoading] = useState(""); // ✅ Holds vehicleId being booked
+  const [bookingLoading, setBookingLoading] = useState(""); 
   const [user, setUser] = useState(null);
 
   const [routeInfo, setRouteInfo] = useState({
@@ -30,14 +30,13 @@ export default function SearchVehicle() {
     if (storedUser) setUser(JSON.parse(storedUser));
   }, []);
 
-  // ✅ Handle Search
   const handleSearch = async (e) => {
     e.preventDefault();
     setSearchLoading(true);
     setVehicles([]);
 
     try {
-      const { data } = await axios.get(`${API_BASE}/api/vehicles/available`, {
+      const { data } = await axios.get(`${API_BASE}/vehicles/available`, {
         params: formData,
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       });
@@ -67,7 +66,7 @@ export default function SearchVehicle() {
     }
   };
 
-  // ✅ Handle Booking
+
   const handleBook = async (vehicleId) => {
     if (!formData.fromPincode || !formData.toPincode || !formData.startTime) {
       toast.error("Please fill all fields before booking.");
@@ -110,7 +109,6 @@ export default function SearchVehicle() {
         <p className="text-red-500 text-center">User not logged in. Please log in.</p>
       ) : (
         <>
-          {/* Search Form */}
           <form
             onSubmit={handleSearch}
             className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-6 rounded-lg shadow-md mb-6"
@@ -173,8 +171,6 @@ export default function SearchVehicle() {
               )}
             </button>
           </form>
-
-          {/* Results */}
           {vehicles.length > 0 && (
             <div>
               <h4 className="text-xl font-bold mb-4 text-gray-800">
@@ -229,7 +225,6 @@ export default function SearchVehicle() {
                 ))}
               </div>
 
-              {/* Map */}
               <div className="mt-6">
                 <Map
                   fromPincode={formData.fromPincode}

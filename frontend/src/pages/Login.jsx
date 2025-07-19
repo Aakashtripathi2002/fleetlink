@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline'; // Heroicons for eye icon
+import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline'; 
+import { toast } from 'react-hot-toast'; // Import toast
 
 function Login({ setUser }) {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -10,18 +11,30 @@ function Login({ setUser }) {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+  const API_BASE = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', formData);
+      const response = await axios.post(`${API_BASE}/auth/login`, formData);
+
+      // Save token and user
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       setUser(response.data.user);
+
+      // Show success toast
+      toast.success('Login successful!');
+
+      // Navigate
       navigate(response.data.user.role === 'admin' ? '/dashboard' : '/user');
     } catch (err) {
-      setError(err.response?.data?.message || 'Login failed');
+      const errorMessage = err.response?.data?.message || 'Login failed';
+      setError(errorMessage);
+      toast.error(errorMessage); // Show error toast
     } finally {
       setLoading(false);
     }

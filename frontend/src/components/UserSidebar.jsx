@@ -1,4 +1,3 @@
-// components/UserSidebar.jsx
 import { NavLink } from "react-router-dom";
 import { XIcon, SearchIcon, ClipboardListIcon } from "@heroicons/react/outline";
 
@@ -9,7 +8,6 @@ export default function UserSidebar({ mobileOpen, onClose }) {
 
   return (
     <>
-      {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col bg-blue-900 text-white w-64 min-h-screen p-4">
         <h2 className="text-2xl font-bold mb-8">User Dashboard</h2>
         <nav className="flex flex-col gap-4">
@@ -33,14 +31,9 @@ export default function UserSidebar({ mobileOpen, onClose }) {
           </NavLink>
         </nav>
       </aside>
-
-      {/* Mobile Drawer */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 flex">
-          {/* Backdrop */}
           <div className="fixed inset-0 bg-black/50" onClick={onClose} />
-
-          {/* Panel */}
           <div className="relative bg-blue-900 text-white w-64 p-4 flex flex-col z-50">
             <button
               className="absolute top-4 right-4"

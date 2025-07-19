@@ -3,9 +3,7 @@ import axios from "axios";
 
 const router = express.Router();
 
-// OSRM base URL (use public demo or self-hosted OSRM)
-const OSRM_URL = "https://router.project-osrm.org"; // Public OSRM server (demo only)
-
+const OSRM_URL = "https://router.project-osrm.org"; 
 router.get("/", async (req, res) => {
   const { fromLat, fromLon, toLat, toLon } = req.query;
 
@@ -14,12 +12,11 @@ router.get("/", async (req, res) => {
   }
 
   try {
-    // OSRM requires lon,lat format
     const url = `${OSRM_URL}/route/v1/driving/${fromLon},${fromLat};${toLon},${toLat}`;
     const { data } = await axios.get(url, {
       params: {
         overview: "full",
-        geometries: "polyline", // compact polyline
+        geometries: "polyline", 
       },
     });
 
@@ -32,7 +29,7 @@ router.get("/", async (req, res) => {
     res.json({
       distanceMeters: route.distance,
       durationSeconds: route.duration,
-      polyline: route.geometry, // frontend can decode
+      polyline: route.geometry, 
     });
   } catch (error) {
     console.error("OSRM error:", error.message);

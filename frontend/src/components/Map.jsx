@@ -11,7 +11,6 @@ import {
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Utils
 import {
   getCoordinates,
   getRoute,
@@ -19,7 +18,6 @@ import {
   formatHours,
 } from "../utils/map";
 
-/** Auto-fit bounds when positions change */
 function FitBounds({ positions }) {
   const map = useMap();
   useEffect(() => {
@@ -30,16 +28,13 @@ function FitBounds({ positions }) {
   return null;
 }
 
-// Custom moving icon
 const vehicleIcon = new L.Icon({
   iconUrl: "https://cdn-icons-png.flaticon.com/512/854/854894.png",
   iconSize: [40, 40],
   iconAnchor: [20, 20],
 });
 
-/**
- * MovingMarker component: animates along route
- */
+
 function MovingMarker({ positions, speed = 50 }) {
   const [index, setIndex] = useState(0);
   const markerRef = useRef(null);
@@ -74,9 +69,6 @@ function MovingMarker({ positions, speed = 50 }) {
   );
 }
 
-/**
- * Main Map Component
- */
 export default function Map({
   fromPincode,
   toPincode,
@@ -92,7 +84,6 @@ export default function Map({
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Fetch route if override not provided
   useEffect(() => {
     let cancelled = false;
 
@@ -141,7 +132,6 @@ export default function Map({
         if (!cancelled) setLoading(false);
       }
     }
-
     if (!overrideCoordinates) {
       loadRoute();
     } else {

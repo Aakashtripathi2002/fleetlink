@@ -4,7 +4,6 @@ import { XIcon } from "@heroicons/react/outline";
 export default function Sidebar({ mobileOpen, onClose }) {
   return (
     <>
-      {/* Desktop Sidebar */}
       <div className="hidden md:flex flex-col bg-blue-900 text-white w-64 min-h-screen p-4">
         <h2 className="text-2xl font-bold mb-8">Admin Dashboard</h2>
         <nav className="flex flex-col gap-4">
@@ -19,17 +18,12 @@ export default function Sidebar({ mobileOpen, onClose }) {
           </Link>
         </nav>
       </div>
-
-      {/* Mobile Sidebar */}
       {mobileOpen && (
         <div className="fixed inset-0 z-50 flex">
-          {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/50"
             onClick={onClose}
           ></div>
-
-          {/* Sidebar Drawer */}
           <div className="relative bg-blue-900 text-white w-64 p-4 flex flex-col z-50">
             <button
               className="absolute top-4 right-4"

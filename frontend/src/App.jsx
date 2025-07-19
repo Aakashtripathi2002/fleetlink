@@ -16,12 +16,10 @@ function App() {
     <Router>
       <Navbar user={user} setUser={setUser} />
       <Routes>
-        {/* Public */}
         <Route path="/" element={<Login setUser={setUser} />} />
         <Route path="/signup" element={<Signup setUser={setUser} />} />
         <Route path="/login" element={<Login setUser={setUser} />} />
 
-        {/* Admin dashboard + nested routes (vehicles, add, bookings, etc.) */}
         <Route
           path="/dashboard/*"
           element={
@@ -31,7 +29,7 @@ function App() {
           }
         />
 
-        {/* User area */}
+        
         <Route
   path="/user/*"
   element={
@@ -50,7 +48,38 @@ function App() {
           }
         />
       </Routes>
-      <Toaster position="top-right" />
+    <Toaster
+  position="top-right"
+  toastOptions={{
+    success: {
+      style: {
+        background: '#4CAF50',
+        color: '#fff',
+        fontSize: '1rem',
+        padding: '16px 24px',
+        minWidth: '280px',
+        borderRadius: '8px',
+      },
+    },
+    error: {
+      style: {
+        background: '#F44336',
+        color: '#fff',
+        fontSize: '1rem',
+        padding: '16px 24px',
+        minWidth: '280px',
+        borderRadius: '8px',
+      },
+    },
+    style: {
+      fontSize: '1rem',
+      padding: '16px 24px',
+      minWidth: '280px',
+      borderRadius: '8px',
+    },
+  }}
+/>
+
     </Router>
   );
 }

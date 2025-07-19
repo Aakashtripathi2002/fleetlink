@@ -10,19 +10,16 @@ import {
   XIcon,
 } from "@heroicons/react/outline";
 
-const API_BASE = "http://localhost:5000"; // Replace with your backend URL
+const API_BASE = "http://localhost:5000";
 
 export default function VehicleList() {
   const [vehicles, setVehicles] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(true);
-
-  // Edit modal state
   const [showEditModal, setShowEditModal] = useState(false);
   const [editVehicle, setEditVehicle] = useState(null);
   const [updateLoading, setUpdateLoading] = useState(false);
 
-  // Delete modal state
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteVehicleId, setDeleteVehicleId] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -46,7 +43,6 @@ export default function VehicleList() {
     }
   };
 
-  /* ---------------- Delete flow ---------------- */
   const handleDeleteClick = (id) => {
     setDeleteVehicleId(id);
     setShowDeleteModal(true);
@@ -70,7 +66,6 @@ export default function VehicleList() {
     }
   };
 
-  /* ---------------- Edit flow ---------------- */
   const handleEditClick = (vehicle) => {
     setEditVehicle(vehicle);
     setShowEditModal(true);
@@ -167,7 +162,6 @@ export default function VehicleList() {
         </div>
       )}
 
-      {/* ---------- Edit Modal (blur) ---------- */}
       {showEditModal && editVehicle && (
         <div className="fixed inset-0 backdrop-blur-sm bg-transparent flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96 relative">
@@ -224,7 +218,6 @@ export default function VehicleList() {
         </div>
       )}
 
-      {/* ---------- Delete Modal (blur) ---------- */}
       {showDeleteModal && (
         <div className="fixed inset-0 backdrop-blur-sm bg-transparent flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96 text-center relative">
@@ -260,7 +253,6 @@ export default function VehicleList() {
   );
 }
 
-/* ---------- Table cell helpers ---------- */
 function Th({ children }) {
   return (
     <th

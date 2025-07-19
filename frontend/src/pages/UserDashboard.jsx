@@ -30,8 +30,7 @@ function UserDashboard() {
   }
 
   return (
-    <div className="flex pt-20"> {/* space for global fixed navbar */}
-      {/* Mobile toggle */}
+    <div className="flex pt-20"> 
       <button
         className="md:hidden fixed top-20 left-4 z-50 bg-blue-600 text-white p-2 rounded-lg shadow-lg"
         onClick={() => setSidebarOpen(true)}
@@ -39,19 +38,17 @@ function UserDashboard() {
         <MenuIcon className="w-6 h-6" />
       </button>
 
-      {/* Sidebar */}
       <UserSidebar mobileOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-      {/* Main content area */}
+      
       <main className="flex-1 min-h-screen bg-gray-100 p-4 md:p-6">
-        {/* Welcome header (desktop) */}
+        
         <div className="hidden md:block mb-8">
           <h2 className="text-3xl font-bold text-gray-800">Welcome, {user.name}</h2>
           <p className="text-gray-600">Role: {user.role}</p>
         </div>
 
         <Routes>
-          {/* default redirect when at /user */}
           <Route index element={<Navigate to="search" replace />} />
           <Route path="search" element={<UserSearchPage user={user} />} />
           <Route path="bookings" element={<UserBookings user={user} />} />

@@ -1,4 +1,3 @@
-// pages/UserSearchPage.jsx
 import SearchVehicle from "../components/SearchVehicle";
 
 export default function UserSearchPage({ user }) {

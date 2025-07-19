@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline'; // for password toggle
+import { EyeIcon, EyeOffIcon } from '@heroicons/react/outline'; 
+import { toast } from 'react-hot-toast'; // Import toast
 
 function Signup({ setUser }) {
   const [formData, setFormData] = useState({
@@ -15,18 +16,30 @@ function Signup({ setUser }) {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
+  const API_BASE = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/signup', formData);
+      const response = await axios.post(`${API_BASE}/auth/signup`, formData);
+
+      // Save token and user
       localStorage.setItem('token', response.data.token);
       localStorage.setItem('user', JSON.stringify(response.data.user));
       setUser(response.data.user);
+
+      // Show success toast
+      toast.success('Signup successful!');
+
+      // Navigate based on role
       navigate(response.data.user.role === 'admin' ? '/dashboard' : '/user');
     } catch (err) {
-      setError(err.response?.data?.message || 'Signup failed');
+      const errorMessage = err.response?.data?.message || 'Signup failed';
+      setError(errorMessage);
+      toast.error(errorMessage); // Show error toast
     } finally {
       setLoading(false);
     }
@@ -38,7 +51,6 @@ function Signup({ setUser }) {
         <h2 className="text-3xl font-bold text-center mb-6 text-gray-800">Signup</h2>
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-5">
-          {/* Name */}
           <div>
             <input
               type="text"
@@ -50,7 +62,6 @@ function Signup({ setUser }) {
             />
           </div>
 
-          {/* Email */}
           <div>
             <input
               type="email"
@@ -62,7 +73,6 @@ function Signup({ setUser }) {
             />
           </div>
 
-          {/* Password with toggle */}
           <div className="relative">
             <input
               type={showPassword ? 'text' : 'password'}
@@ -84,7 +94,6 @@ function Signup({ setUser }) {
             </span>
           </div>
 
-          {/* Role */}
           <div>
             <select
               value={formData.role}
@@ -96,7 +105,6 @@ function Signup({ setUser }) {
             </select>
           </div>
 
-          {/* Button */}
           <button
             type="submit"
             disabled={loading}

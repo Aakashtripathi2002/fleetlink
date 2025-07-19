@@ -14,8 +14,6 @@ function Navbar({ user, setUser }) {
     navigate("/login");
     setMenuOpen(false);
   };
-
-  // Close mobile menu when route changes
   useEffect(() => {
     setMenuOpen(false);
   }, [location]);
@@ -23,15 +21,12 @@ function Navbar({ user, setUser }) {
   return (
     <nav className="bg-gradient-to-r from-blue-700 to-blue-500 shadow-lg fixed w-full z-50">
       <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-        {/* Logo */}
         <Link
           to="/"
           className="text-white text-2xl font-bold tracking-wide hover:text-yellow-300 transition duration-200"
         >
           FleetLink
         </Link>
-
-        {/* Desktop Menu */}
         <div className="hidden md:flex items-center space-x-6">
           {user ? (
             <>
@@ -62,8 +57,6 @@ function Navbar({ user, setUser }) {
             </>
           )}
         </div>
-
-        {/* Mobile Account Menu Toggle */}
         <div className="md:hidden">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
@@ -74,8 +67,6 @@ function Navbar({ user, setUser }) {
           </button>
         </div>
       </div>
-
-      {/* Mobile Account Menu Dropdown */}
       {menuOpen && (
         <div className="md:hidden bg-blue-600 text-white shadow-lg">
           <div className="flex flex-col space-y-4 px-4 py-6">

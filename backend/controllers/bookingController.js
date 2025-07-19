@@ -55,8 +55,8 @@ export const getBookings=async (req, res) => {
     }
 
     const bookings = await Booking.find(query)
-      .populate('vehicleId')       // vehicle info
-      .populate('customerId');     // user who booked (needed for admin view)
+      .populate('vehicleId')       
+      .populate('customerId');  
 
     res.json(bookings);
   } catch (error) {
@@ -73,13 +73,11 @@ export const cancelBooking=async (req, res) => {
       return res.status(404).json({ message: "Booking not found" });
     }
 
-    // Access control
     if (req.user.role === "user") {
       if (booking.customerId.toString() !== req.user.id) {
         return res.status(403).json({ message: "Access denied" });
       }
     } else if (req.user.role === "admin") {
-      // Ensure this admin owns the vehicle tied to the booking
       const vehicle = await Vehicle.findById(booking.vehicleId);
       if (!vehicle) {
         return res.status(404).json({ message: "Vehicle not found for booking" });
@@ -88,8 +86,6 @@ export const cancelBooking=async (req, res) => {
         return res.status(403).json({ message: "Access denied" });
       }
     }
-
-    // Actually delete
     await booking.deleteOne(); 
 
     return res.json({ message: "Booking cancelled" });
