@@ -10,7 +10,7 @@ import {
   XIcon,
 } from "@heroicons/react/outline";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE = import.meta.env.VITE_BACKEND_URL|| "http://localhost:5000";
 
 export default function VehicleList() {
   const [vehicles, setVehicles] = useState([]);
